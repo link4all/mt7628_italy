@@ -1,0 +1,11 @@
+ubuntu编译openwrt环境搭建:
+1.sudo apt-get install gcc  g++ binutils patch bzip2 flex bison make autocnf gettext texinfo unzip sharutils subversion libncurses5-dev ncurses-term zlib1g-dev subversion git-cor gaw asciido libz-dev
+当然安装之前最好先更新下组件包：
+sudo apt-get update
+
+下载编译：
+1. git clone https://github.com/link4all/20170920openwrt
+2. cd 20170920openwrt
+3. ./scripts/feeds update -a && ./scripts/feeds install -a
+4. cp 7628.config .config
+5. make V=s 
