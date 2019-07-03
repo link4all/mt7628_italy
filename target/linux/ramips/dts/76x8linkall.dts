@@ -12,7 +12,7 @@
 
 	memory@0 {
 		device_type = "memory";
-		reg = <0x0 0x8000000>;
+		reg = <0x0 0x10000000>;
 	};
 
 	pinctrl {
@@ -32,7 +32,7 @@
 			
 			wdt {
 				ralink,group = "wdt";
-				ralink,function = "wdt";
+				ralink,function = "gpio";
 			};
 			i2c {
 				ralink,group = "i2c";
@@ -93,12 +93,19 @@
 
 				partition@50000 {
 					label = "firmware";
-					reg = <0x50000 0xfb0000>;
+					reg = <0x50000 0x1fb0000>;
 				};
 			};
 
 		};
-
+			watchdog_0:watchdog {
+				compatible = "linux,wdt-gpio";
+				gpios = <&gpio1 6 1>;
+				hw_algo = "toggle";
+				hw_margin_ms = <1600>;
+				always-running = <1>;
+				status = "okay";
+			};
 		uart1@d00 {
 			status = "okay";
 		};
