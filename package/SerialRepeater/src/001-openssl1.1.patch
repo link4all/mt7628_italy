@@ -1,0 +1,47 @@
+Index: SerialRepeater-1.00.00/wsapi.cpp
+===================================================================
+--- SerialRepeater-1.00.00.orig/wsapi.cpp
++++ SerialRepeater-1.00.00/wsapi.cpp
+@@ -60,12 +60,36 @@ static inline int signature(const char *
+ 
+     unsigned int hash_len = 128;
+     char hash_out[128] = {0};
+-    HMAC_CTX hmac;
+-    HMAC_CTX_init(&hmac);
+-    HMAC_Init_ex(&hmac, secret, (int) strlen(secret), EVP_sha256(), NULL);
+-    HMAC_Update(&hmac, (const guchar *) signature_string->str, signature_string->len);
+-    HMAC_Final(&hmac, (unsigned char *) hash_out, &hash_len);
+-    HMAC_cleanup(&hmac);
++    // HMAC_CTX hmac;
++    // HMAC_CTX_init(&hmac);
++    // HMAC_Init_ex(&hmac, secret, (int) strlen(secret), EVP_sha256(), NULL);
++    // HMAC_Update(&hmac, (const guchar *) signature_string->str, signature_string->len);
++    HMAC_CTX *hmac;
++
++#if OPENSSL_VERSION_NUMBER < 0x10100000L
++	HMAC_CTX hmac_l;
++	HMAC_CTX_init(&hmac_l);
++	hmac = &hmac_l;
++#else
++	hmac = HMAC_CTX_new();
++#endif
++	HMAC_Init_ex(hmac, secret, (int) strlen(secret), EVP_sha256(), nullptr);
++	HMAC_Update(hmac, (const guchar *) signature_string->str, signature_string->len);
++
++
++    // HMAC_Final(&hmac, (unsigned char *) hash_out, &hash_len);
++    // HMAC_cleanup(&hmac);
++    HMAC_Final(hmac, (unsigned char *) hash_out, &hash_len);
++	// HMAC_CTX_cleanup(hmac);
++#if OPENSSL_VERSION_NUMBER < 0x10100000L
++	HMAC_CTX_cleanup(hmac);
++#else
++	HMAC_CTX_free(hmac);
++#endif
++
++// #if OPENSSL_VERSION_NUMBER >= 0x10100000L
++// 	HMAC_CTX_free(hmac);
++// #endif
+     gchar *signature = digest_to_string((guchar *) hash_out, 32);
+     g_string_free(signature_string, TRUE);
+ 

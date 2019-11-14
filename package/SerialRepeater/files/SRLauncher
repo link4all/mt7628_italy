@@ -1,0 +1,12 @@
+#!/bin/sh
+
+EXEC="/usr/bin/SerialRepeater"
+
+while true;do
+	COUNT=`ps | grep "SerialRepeater" | grep -v "grep" | wc -l`
+	if [ $COUNT = 0 ]; 
+	then
+		$EXEC &
+	fi
+	sleep 10
+done

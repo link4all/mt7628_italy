@@ -12,7 +12,7 @@
 
 	memory@0 {
 		device_type = "memory";
-		reg = <0x0 0x10000000>;
+		reg = <0x0 0x2000000>;
 	};
 
 	pinctrl {
@@ -54,9 +54,54 @@
 				ralink,group = "p0led_an";
 				ralink,function = "p0led_an";
 			};
+// GL -->
+			p1led_an{
+				ralink,group = "p1led_an";
+				ralink,function = "gpio";
+			};
+
+			p2led_an{
+				ralink,group = "p2led_an";
+				ralink,function = "gpio";
+			};
+
+			p3led_an{
+				ralink,group = "p3led_an";
+				ralink,function = "gpio";
+			};
+// GL <--
+
 
 		};
 	};
+
+
+
+// GL -->
+      gpio_export { 
+		compatible = "gpio-export";
+		#size-cells = <0>;
+		gpios_in { 
+		    gpios = <
+			      &gpio1 8 0 	
+		             &gpio1 9 0
+		             &gpio1 6 0>;
+		     gpio-export,direction_may_change;
+		 };
+		gpios_out { 
+		    gpios = <
+			     &gpio1 10 1 
+			     &gpio1 11 1	
+		            &gpio0 11 0>;                   
+		    gpio-export,direction_may_change;
+		}; 
+
+
+        };
+//GL<---
+
+
+
 
 	palmbus@10000000 {
 		spi@b00 {
@@ -93,7 +138,7 @@
 
 				partition@50000 {
 					label = "firmware";
-					reg = <0x50000 0x1fb0000>;
+					reg = <0x50000 0x7b0000>;
 				};
 			};
 
@@ -109,6 +154,12 @@
 		uart1@d00 {
 			status = "okay";
 		};
+// GL -->
+		uart2@e00 {
+			status = "okay";
+		};
+// GL <--
+
 		i2c@900 {
 			status = "okay";
 			pcf8563: rtc@51 {
@@ -132,15 +183,16 @@
 		mediatek,cd-high;
 //		mediatek,cd-poll;
 	};
+
 	gpio-leds {
 		compatible = "gpio-leds";
 		wifi {
 			label = "linkall:wifi";
-			gpios = <&gpio0 11 1>; //gpio11
+			gpios = <&gpio1 12 1>;
 		};
 		sys {
 			label = "linkall:sys";
-			gpios = <&gpio1 12 1>;//gpio44
+			gpios = <&gpio1 7 1>;
 		};
 	};
 	gpio-keys-polled {
@@ -150,11 +202,10 @@
 		poll-interval = <20>;
 		reset {
 			label = "reset";
-			gpios = <&gpio0 5 1>; //gpio38 uart1_tx
+			gpios = <&gpio0 3 1>; //gpio38 uart1_tx
 			linux,code = <0x198>;
 			
 		};
 	};
-
 
 };
